@@ -1,13 +1,16 @@
 from flask import request
 from flask import jsonify
 from flask import Flask
+from flask import send_from_directory
+
 
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import load_model
 
 import pickle
 
-app = Flask(__name__)
+app = Flask(__name__,
+            static_folder='./static')
 
 MAX_SEQ_LENGTH=100
 
@@ -36,6 +39,10 @@ with open('./tokenizers/word_tokenizer.pickle', 'rb') as handle:
 
 with open('./tokenizers/tag_tokenizer.pickle', 'rb') as handle:
     tag_tokenizer = pickle.load(handle)
+
+@app.route('/',methods=['GET'])
+def home():
+    return app.send_static_file('hello.html')
 
 @app.route('/hello',methods=['POST'])
 def hello():
